@@ -13,10 +13,12 @@ than copied into each and left to drift.
 
 ## Plugins
 
-| Plugin | Command | What it is |
+| Plugin | What it is | Commands |
 |---|---|---|
-| `schema` | `/schema` | Framework-agnostic relational schema conventions, with a checker that reads the live catalogue |
-| `comments` | `/comments` | Near-zero comments in every file, with an auditor that finds the ones to remove |
+| `schema` | Framework-agnostic relational schema conventions, with a checker that reads the live catalogue | `/schema:check`, `/schema:review`, `/schema:adopt` |
+| `comments` | Near-zero comments in every file, with an auditor that finds the ones to remove | `/comments:audit`, `/comments:clean`, `/comments:adopt` |
+
+Commands from a plugin are namespaced by the plugin, so it is `/schema:check`, not `/schema check`.
 
 ## Invoke these rather than waiting for them
 
@@ -31,12 +33,12 @@ work Claude already knows how to do, so it is never reached for.
 
 ## Adopting these in a repository
 
-`/schema adopt` and `/comments adopt` do the setup. What they put in place, weakest to strongest:
+`/schema:adopt` and `/comments:adopt` do the setup. What they put in place, weakest to strongest:
 
 | Layer | Reaches | Stops a merge |
 |---|---|---|
 | `CLAUDE.md` pointing at the spec | the model, on every turn, always in context | no |
-| `/schema`, `/comments` | when somebody asks | no |
+| the commands above | when somebody asks | no |
 | The checkers in CI | every pull request | **yes, once the job is a required status check** |
 
 Only the last one enforces. The first is what changes the code as it is written, and the two are
