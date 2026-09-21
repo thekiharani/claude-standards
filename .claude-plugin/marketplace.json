@@ -1,0 +1,17 @@
+{
+  "name": "norialabs-standards",
+  "owner": { "name": "Noria Technologies" },
+  "metadata": {
+    "description": "Engineering standards shared across Noria codebases, as Claude Code plugins.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "schema",
+      "description": "Framework-agnostic relational schema conventions, with a conformance checker that reads the live catalogue.",
+      "version": "1.0.0",
+      "author": { "name": "Noria Technologies" },
+      "source": "./plugins/schema"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+[project]
+engine = "postgres"
+
+[tenancy]
+enabled = true
+column = "workspace_id"
+table = "workspaces"
+
+[keys.roles]
+owner_id = "users"
+assignee_id = "users"
+
+[columns.widths]
+currency = { width = 3, standard = "ISO 4217" }
+
+[lifecycle]
+soft_delete = ["users", "accounts"]
+append_only = ["audit_logs"]
+retire = ["workspaces"]
+composed = ["deals"]
+ephemeral = ["legacy_notes"]

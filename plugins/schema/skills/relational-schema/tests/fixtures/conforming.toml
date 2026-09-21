@@ -1,0 +1,22 @@
+[project]
+engine = "postgres"
+
+[tenancy]
+enabled = true
+column = "workspace_id"
+table = "workspaces"
+
+[keys.roles]
+owner_id = "users"
+actor_id = "users"
+
+[columns.widths]
+currency = { width = 3, standard = "ISO 4217" }
+
+[columns.json]
+allowed = ["metadata"]
+
+[lifecycle]
+soft_delete = ["workspaces", "users", "accounts"]
+composed = ["account_notes"]
+append_only = ["audit_logs"]
