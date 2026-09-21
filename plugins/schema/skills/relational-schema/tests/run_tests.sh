@@ -22,7 +22,7 @@ CONTAINER="schema-conformance-test"
 PY="${PYTHON:-python3}"
 
 # Every rule ID the violations fixture is built to trip. Add a rule, add a case, add it here.
-EXPECTED=(K1 K3 K6 T3 C1 C5 D2 M1 M3 L/B U1)
+EXPECTED=(K1 K3 K6 T3 C1 C5 D2 M1 M3 L5 U1)
 
 cleanup() { docker rm -f "$CONTAINER" >/dev/null 2>&1 || true; }
 trap cleanup EXIT

@@ -240,7 +240,7 @@ def check_tenancy(cat: Catalogue) -> list[Finding]:
             if table not in scoped:
                 continue
             if not enabled:
-                out.append(Finding("T3", "fail", table, "carries the tenant column with no RLS"))
+                out.append(Finding("T3", "warn", table, "carries the tenant column with no RLS"))
             elif not forced:
                 out.append(Finding("T3", "fail", table,
                                    "RLS is enabled but not FORCED, so the table owner is exempt"))
@@ -338,25 +338,25 @@ def check_lifecycle(cat: Catalogue) -> list[Finding]:
     cfg = cat.config
     if not cfg.lifecycle:
         return [Finding("L", "unverifiable", "lifecycle",
-                        "no lifecycle assignments configured, so no table can be checked")]
+                        "not configured; deletion behaviour is the project's choice (L6)")]
 
     out: list[Finding] = []
     triggers = cat.triggers()
     soft_deleted = {t for t, c, *_ in cat.columns() if c == "deleted_at"}
 
-    for table in cat.tables():
-        klass = cfg.lifecycle.get(table)
-        if klass is None:
-            out.append(Finding("L", "fail", table, "is assigned no lifecycle class"))
+    # L6. A table absent from the configuration has made no claim, so there is nothing to check.
+    for table, klass in sorted(cfg.lifecycle.items()):
+        if table not in cat.tables():
+            out.append(Finding("L", "warn", table, "is named in the configuration and does not exist"))
             continue
         if klass == "soft_delete" and table not in soft_deleted:
-            out.append(Finding("L/A", "fail", table, "is class A with no deleted_at column"))
+            out.append(Finding("L3", "fail", table, "is declared soft_delete with no deleted_at column"))
         if klass == "append_only" and table not in triggers:
-            out.append(Finding("L/B", "fail", table,
-                               "is class B with no trigger; an application guard alone is bypassed"))
+            out.append(Finding("L5", "fail", table,
+                               "is declared append_only with no trigger; an application guard alone is bypassed"))
         if klass != "soft_delete" and table in soft_deleted:
-            out.append(Finding("L", "warn", table,
-                               f"is class {klass} but carries deleted_at"))
+            out.append(Finding("L2", "warn", table,
+                               f"is declared {klass} and carries deleted_at, which is two shapes at once"))
     return out
 
 

@@ -1,8 +1,12 @@
 # Relational schema conventions, normative text
 
-Version 1.0.
+Version 1.2.
 
-MUST / SHOULD / MAY carry their usual weight. Rules marked **[pg]** need PostgreSQL or an engine
+MUST / SHOULD / MAY carry their usual weight. A rule is a MUST only where following it costs
+nothing and breaking it costs something later — naming, types, widths, migration discipline.
+Where reasonable projects genuinely differ — how they isolate tenants, how they delete, how they
+represent money in code — the rule is a SHOULD and the choice is the project's, recorded in its
+own configuration rather than settled here. Rules marked **[pg]** need PostgreSQL or an engine
 with the same feature; the rest are engine-neutral. Rules marked **[app]** cannot be expressed in
 DDL and need the application to cooperate.
 
@@ -13,7 +17,7 @@ DDL and need the application to cooperate.
 - [C — Column types](#c--column-types)
 - [D — Dates and times](#d--dates-and-times)
 - [M — Money](#m--money)
-- [L — Lifecycle](#l--lifecycle)
+- [L — Deletion and immutability](#l--deletion-and-immutability)
 - [U — Uniqueness and ordering](#u--uniqueness-and-ordering)
 - [G — Migration discipline](#g--migration-discipline)
 - [Project configuration](#project-configuration)
@@ -35,8 +39,9 @@ default as a backstop only.
 
 **K5.** Role shape: any other `<role>_id`, valid only if listed in the project's configuration.
 
-**K6.** The role allowlist MUST be checked in both directions: an unlisted shape fails, and a
-listed key that nothing uses fails too.
+**K6.** Where a project keeps a role allowlist, it SHOULD be checked in both directions: an
+unlisted shape fails, and a listed key that nothing uses fails too, so the list cannot rot into
+stale documentation.
 
 ### Why v7 rather than v4
 
@@ -68,15 +73,17 @@ SHOULD then be used in code, columns, routes and tests alike.
 **T2.** Every tenant-scoped table MUST carry that column, non-null, with a foreign key to the
 tenant table.
 
-**T3. [pg]** Row-level security MUST be enabled **and forced** on every such table, in the same
-migration statement block that creates it. Forced, or the table owner is exempt and the boundary
-is decorative.
+**T3. [pg]** Where isolation is enforced in the database, row-level security SHOULD be enabled
+**and forced** on every such table, in the same migration statement block that creates it. Forced,
+or the table owner is exempt and the boundary is decorative.
 
 **T4. [app]** The tenant identity MUST reach the session through a connection-scoped variable,
 set around the reads that need it and never for the lifetime of a request.
 
-**T5. [app]** Isolation MUST NOT be implemented as an application-layer query scope. The database
-is the boundary; a scope is a convenience on top of it.
+**T5. [app]** Isolation SHOULD be enforced by the database rather than by an application-layer
+query scope. Where it is a scope, it MUST pass through one choke point no query can bypass — a
+repository layer or a connection wrapper, not a convention — because a scope that any query can
+forget is not a boundary.
 
 **T6.** Every tenant-scoped parent MUST carry `UNIQUE (tenant_column, id)`, and every child
 foreign key MUST be re-declared as a composite `(tenant_column, child_id) → parent (tenant_column,
@@ -122,8 +129,8 @@ Anything filtered or aggregated on regularly MUST be a real column.
 
 **C7. [app]** Every semi-structured column MUST have a typed representation in the application.
 
-**C8.** Adding a semi-structured column outside the configured list MUST carry its justification
-in the migration's name.
+**C8.** Where a project keeps a list of agreed semi-structured columns, adding one outside it
+SHOULD carry its justification in the migration's name.
 
 ### Why powers of two
 
@@ -181,8 +188,8 @@ suffixed `_minor`. Never float, never decimal.
 **M4.** Every amount column MUST carry bounds as a check constraint, added unvalidated where the
 engine supports it so the migration does not rewrite the table.
 
-**M5. [app]** Amounts MUST be read and written through a typed value object carrying the currency,
-never as a bare integer.
+**M5. [app]** Amounts SHOULD be read and written through a typed value object carrying the
+currency rather than as a bare integer. How that is expressed is the language's business.
 
 **M6.** Amounts on a settled financial record MUST be immutable once written, enforced by a
 trigger comparing old and new. Corrections are new rows, never edits.
@@ -201,33 +208,60 @@ names it. `price_minor` plus `currency` never needs renaming.
 
 ---
 
-## L — Lifecycle
+## L — Deletion and immutability
 
-Every table MUST be assigned exactly one class, in the commit that creates it, recorded in the
-project configuration. Choosing is not optional and defaulting is not a choice.
+How a table handles deletion is a design choice, not a convention, and it is the project's to
+make. Nothing here mandates a shape. What this section does is name the shapes that exist, say
+what each one costs, and set out what MUST hold *once a shape is chosen* — because the common
+failure is not picking the wrong one, it is picking one and implementing half of it.
 
-| Class | Behaviour | Mechanism |
+**L1.** A table's deletion behaviour SHOULD be decided when the table is created rather than
+discovered when the first delete is written.
+
+**L2.** A table MUST NOT use more than one of these shapes at once. Two ways to be deleted is how
+a row ends up visible to one query and absent from another.
+
+| Shape | Fits | Costs |
 |---|---|---|
-| **A** soft delete | hidden from every read and every metric, restorable, deletion audited | `deleted_at` timestamp; blocked while blocking children exist |
-| **B** append-only | insert only; a correction is a new row | trigger rejecting UPDATE and DELETE **[pg]**, plus an application guard for a readable error |
-| **C** retire | withdrawn with a flag or status, hard-deleted only when nothing references it | `RESTRICT` on every inbound foreign key |
-| **D** composed | no meaning without its parent, never restored alone | `CASCADE` from the parent |
-| **E** ephemeral | hard delete, no ceremony | scheduled prune |
+| **Hard delete** | rows that are cheap to recreate, or that a retention policy exists to remove | nothing; this is the default and needs no ceremony |
+| **Soft delete** | rows carrying authored content, or that history points at by id | every read must filter, and U1 applies |
+| **Withdraw** (a status or an `archived_at`) | rows that stop being *offered* without stopping being *referenced* | a second state for every query that lists choices |
+| **Append-only** | audit trails, state transitions, ledgers, usage counters | corrections become new rows, and readers must fold them |
 
-### Why B needs a trigger rather than a convention
+**L3.** Where a table soft-deletes, the marker MUST be a nullable timestamp — `deleted_at` unless
+the project's configuration names another — never a boolean, which cannot say when.
 
-Class B is what audit trails, state transitions, immutable ledgers and usage counters are made of
-— the tables every metric, invoice and disputed-access claim is computed from. An application
-guard is bypassed by a console, a migration, a backfill script or a second service. A table four
-codepaths can edit is a table nobody can defend.
+**L4.** Where a table soft-deletes, every read path MUST exclude deleted rows by default, and
+U1 applies to its unique indexes.
+
+**L5. [pg]** Where a table is append-only, UPDATE and DELETE MUST be rejected by a trigger, not by
+application convention alone. An application guard is bypassed by a console, a migration, a
+backfill script or a second service.
+
+**L6.** A project MAY record its choice per table in the configuration. Doing so is what lets a
+checker verify L3 and L4; leaving it out means those rules are simply not checked, which is a
+legitimate choice and not a finding.
+
+### Why a soft delete is not the safe default
+
+It is the option that looks free and is not. Every query acquires a filter that is invisible when
+forgotten, uniqueness stops working the obvious way, and the row that was "kept for safety" is
+usually never read again. Reach for it when a delete destroys something a person wrote, or when
+history references the row by id and the reference would otherwise be rewritten — not as a
+reflex, and not because deleting feels frightening.
+
+### Why L5 needs a trigger rather than a convention
+
+Append-only tables are what metrics, invoices and disputed-access claims are computed from. A
+table four codepaths can edit is a table nobody can defend.
 
 ---
 
 ## U — Uniqueness and ordering
 
-**U1. [pg]** On a soft-deleted table (class A), every unique index MUST be partial:
-`WHERE deleted_at IS NULL`. Exceptions — keys that must survive deletion — MUST be listed in the
-project configuration.
+**U1. [pg]** On a table that soft-deletes, every unique index MUST be partial:
+`WHERE deleted_at IS NULL`. Exceptions — keys that must survive deletion, such as an address that
+may not be reused by a second person — SHOULD be recorded with their reason.
 
 **U2. [app]** Uniqueness conflicts MUST be detected from the database's own constraint violation,
 never by a pre-flight `SELECT`, which is a race.
@@ -315,7 +349,8 @@ table falls over.
 
 A project declares its own choices in `schema-conventions.toml` at the repository root. Keeping
 the rules here and the choices there is what lets one copy of this standard serve several
-codebases without forking per project.
+codebases without forking per project. Every section below is optional: an absent section means
+the rules that read it are not checked, not that the project has failed them.
 
 ```toml
 [project]
@@ -349,13 +384,12 @@ access_token = { width = 2048, standard = "provider-sized OAuth token" }
 [columns.json]
 allowed = ["metadata", "payload", "custom_fields", "permissions"]
 
-# L. Every table names its class. A table absent from here fails.
+# L6. Optional. Naming a table here is what lets L3 and L4 be checked; omit the section and
+# deletion behaviour is simply not checked, which is a legitimate choice. Tables not listed are
+# not findings.
 [lifecycle]
-soft_delete = ["accounts", "contacts", "deals"]
+soft_delete = ["accounts", "contacts"]
 append_only = ["audit_logs", "stage_transitions"]
-retire = ["products", "tags"]
-composed = ["deal_objections", "consent_records"]
-ephemeral = ["idempotency_keys", "otp_challenges"]
 
 # U1. Unique indexes that must survive a soft delete, each with its reason.
 [uniqueness.exceptions]
@@ -381,6 +415,6 @@ Two traps when porting:
 
 - **Prisma's `@default(uuid())` is v4.** It satisfies "a UUID" and violates K1 for every reason K1
   exists. Generate v7 in application code and pass it in.
-- **ORMs that hide soft deletes globally** make class A easy and class B harder to notice: a
-  global filter gives no hint that a table should reject writes outright. The trigger is what
-  makes B true, in every stack on this list.
+- **ORMs that hide soft deletes globally** make the soft delete easy and append-only harder to
+  notice: a global filter gives no hint that a table should reject writes outright. The trigger is
+  what makes append-only true, in every stack on this list.

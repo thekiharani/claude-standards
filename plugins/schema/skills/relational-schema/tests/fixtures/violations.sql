@@ -62,7 +62,7 @@ create table deals (
 -- holds the address forever.
 create unique index users_email_unique on users (email);
 
--- L/B: declared append-only in the config with no trigger to enforce it.
+-- L5: declared append-only in the config with no trigger to enforce it.
 create table audit_logs (
     id uuid primary key default gen_random_uuid(),
     workspace_id uuid not null references workspaces (id),
