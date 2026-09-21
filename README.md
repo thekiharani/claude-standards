@@ -6,7 +6,7 @@ rather than copied into each and left to drift.
 ## Using it
 
 ```
-/plugin marketplace add norialabs/claude-standards
+/plugin marketplace add thekiharani/claude-standards
 /plugin install schema@norialabs-standards
 ```
 
