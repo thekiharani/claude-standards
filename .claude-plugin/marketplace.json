@@ -1,6 +1,8 @@
 {
   "name": "norialabs-standards",
-  "owner": { "name": "Noria Technologies" },
+  "owner": {
+    "name": "Noria Technologies"
+  },
   "metadata": {
     "description": "Engineering standards shared across Noria codebases, as Claude Code plugins.",
     "version": "1.0.0"
@@ -10,8 +12,19 @@
       "name": "schema",
       "description": "Framework-agnostic relational schema conventions, with a conformance checker that reads the live catalogue.",
       "version": "1.0.0",
-      "author": { "name": "Noria Technologies" },
+      "author": {
+        "name": "Noria Technologies"
+      },
       "source": "./plugins/schema"
+    },
+    {
+      "name": "comments",
+      "description": "Near-zero comments as a hard rule in every file, with an auditor that finds the ones a codebase would be better without.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Noria Technologies"
+      },
+      "source": "./plugins/comments"
     }
   ]
 }

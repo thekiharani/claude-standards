@@ -15,6 +15,7 @@ rather than copied into each and left to drift.
 | Plugin | What it is |
 |---|---|
 | `schema` | Framework-agnostic relational schema conventions, with a checker that reads the live catalogue |
+| `comments` | Near-zero comments in every file, with an auditor that finds the ones to remove |
 
 ## Working on it
 
@@ -27,6 +28,7 @@ rule means changing three things together, which is what keeps the standard from
 
 ```bash
 cd plugins/schema/skills/relational-schema/tests && ./run_tests.sh
+cd plugins/comments/skills/minimal-comments/tests && ./run_tests.sh
 ```
 
 It spins up a throwaway PostgreSQL, loads a fixture that breaks every checkable rule once and a

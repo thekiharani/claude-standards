@@ -1,0 +1,12 @@
+# deploy workflow
+name: deploy
+
+on:
+  push:
+    # push to main
+    branches: [main]
+
+jobs:
+  build:
+    # the build job
+    runs-on: ubuntu-latest
