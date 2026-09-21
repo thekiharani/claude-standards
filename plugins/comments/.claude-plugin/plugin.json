@@ -2,5 +2,8 @@
   "name": "comments",
   "version": "1.0.0",
   "description": "Near-zero comments as a hard rule in every file, with an auditor that finds the ones a codebase would be better without.",
-  "author": { "name": "Noria Technologies" }
+  "author": {
+    "name": "Joseph Gitonga",
+    "url": "https://github.com/thekiharani"
+  }
 }

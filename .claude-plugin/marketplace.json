@@ -1,10 +1,11 @@
 {
-  "name": "norialabs-standards",
+  "name": "claude-standards",
   "owner": {
-    "name": "Noria Technologies"
+    "name": "Joseph Gitonga",
+    "url": "https://github.com/thekiharani"
   },
   "metadata": {
-    "description": "Engineering standards shared across Noria codebases, as Claude Code plugins.",
+    "description": "Engineering standards as Claude Code plugins, with a checker behind each one.",
     "version": "1.0.0"
   },
   "plugins": [
@@ -13,7 +14,8 @@
       "description": "Framework-agnostic relational schema conventions, with a conformance checker that reads the live catalogue.",
       "version": "1.0.0",
       "author": {
-        "name": "Noria Technologies"
+        "name": "Joseph Gitonga",
+        "url": "https://github.com/thekiharani"
       },
       "source": "./plugins/schema"
     },
@@ -22,7 +24,8 @@
       "description": "Near-zero comments as a hard rule in every file, with an auditor that finds the ones a codebase would be better without.",
       "version": "1.0.0",
       "author": {
-        "name": "Noria Technologies"
+        "name": "Joseph Gitonga",
+        "url": "https://github.com/thekiharani"
       },
       "source": "./plugins/comments"
     }

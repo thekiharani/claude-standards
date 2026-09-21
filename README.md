@@ -1,13 +1,14 @@
-# Noria engineering standards
+# Engineering standards
 
-Shared standards for Claude Code, as plugins. One copy, versioned here, used by every repository
-rather than copied into each and left to drift.
+Standards for Claude Code, as plugins. One copy, versioned here, used by every repository rather
+than copied into each and left to drift.
 
 ## Using it
 
 ```
 /plugin marketplace add thekiharani/claude-standards
-/plugin install schema@norialabs-standards
+/plugin install schema@claude-standards
+/plugin install comments@claude-standards
 ```
 
 ## Plugins
