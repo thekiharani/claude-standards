@@ -13,10 +13,32 @@ than copied into each and left to drift.
 
 ## Plugins
 
-| Plugin | What it is |
-|---|---|
-| `schema` | Framework-agnostic relational schema conventions, with a checker that reads the live catalogue |
-| `comments` | Near-zero comments in every file, with an auditor that finds the ones to remove |
+| Plugin | Command | What it is |
+|---|---|---|
+| `schema` | `/schema` | Framework-agnostic relational schema conventions, with a checker that reads the live catalogue |
+| `comments` | `/comments` | Near-zero comments in every file, with an auditor that finds the ones to remove |
+
+## Invoke these rather than waiting for them
+
+Both ship as skills, and a skill loads when Claude decides it needs one. Measured on 20 realistic
+prompts per skill, three runs each, that decision goes the wrong way almost every time: the schema
+skill loaded on 2 invocations in 20 that squarely called for it, and the comments skill on 0.
+
+Rewriting the descriptions does not fix it. Four rounds of automatic optimisation produced
+identical scores, and a hand-written imperative version - "MUST be read before writing or editing
+any file" - moved nothing. The cause is not the wording. A conventions skill describes how to do
+work Claude already knows how to do, so it is never reached for.
+
+What follows is how to use these:
+
+- **`/schema` and `/comments`** when you want the rules applied to what you are doing now.
+- **A line in the repository's `CLAUDE.md`** pointing at the spec, which is always in context and
+  does not depend on a decision to load anything.
+- **The checkers in CI**, which do not depend on triggering at all and are the only part that
+  fails a build.
+
+The eval sets and results are in `evals/`, so the measurement can be repeated when the model or
+the harness changes.
 
 ## Working on it
 

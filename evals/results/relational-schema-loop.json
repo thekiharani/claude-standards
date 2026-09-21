@@ -1,0 +1,1115 @@
+{
+  "exit_reason": "max_iterations (4)",
+  "original_description": "Framework-agnostic conventions for relational database schemas: primary and foreign key types and naming, string widths and when a column should be unbounded text, JSON columns, enums, money, timestamps, soft-delete and append-only lifecycles, partial unique indexes, multi-tenant isolation, and migration discipline. Use this whenever creating or altering a table, adding a column, choosing a key or a column type, writing or reviewing a migration in any tool (Prisma, Alembic, dbmate, Flyway, Eloquent, Ecto, Drizzle, raw SQL), designing a data model, or reviewing a pull request that touches a schema - including when the user has not named a convention and is just asking what type something should be, or whether a change is safe to run against a database that already holds data.",
+  "best_description": "Framework-agnostic conventions for relational database schemas: primary and foreign key types and naming, string widths and when a column should be unbounded text, JSON columns, enums, money, timestamps, soft-delete and append-only lifecycles, partial unique indexes, multi-tenant isolation, and migration discipline. Use this whenever creating or altering a table, adding a column, choosing a key or a column type, writing or reviewing a migration in any tool (Prisma, Alembic, dbmate, Flyway, Eloquent, Ecto, Drizzle, raw SQL), designing a data model, or reviewing a pull request that touches a schema - including when the user has not named a convention and is just asking what type something should be, or whether a change is safe to run against a database that already holds data.",
+  "best_score": "4/8",
+  "best_train_score": "6/12",
+  "best_test_score": "4/8",
+  "final_description": "If a message names a table, column, key, index, or migration and asks what it should be \u2014 or whether what already exists is right \u2014 use this skill. It carries the project's binding schema standard, so answering from general database knowledge produces the wrong answer. Applies to: column types and widths (enum vs string, varchar length, text, JSON), money and currency, timestamps, primary keys and who generates the id, foreign key naming, multi-tenant org_id design, unique indexes and soft delete, and whether a migration is safe against a database holding real data. Any engine or ORM \u2014 Postgres, MySQL, Prisma, Alembic, Drizzle, Eloquent, Ecto, raw SQL \u2014 and any form: a fresh data model, a single-column tweak, or reviewing a PR or diff that adds or alters tables. Not for query performance, N+1 fetching, or operating databases.",
+  "iterations_run": 4,
+  "holdout": 0.4,
+  "train_size": 12,
+  "test_size": 8,
+  "history": [
+    {
+      "iteration": 1,
+      "description": "Framework-agnostic conventions for relational database schemas: primary and foreign key types and naming, string widths and when a column should be unbounded text, JSON columns, enums, money, timestamps, soft-delete and append-only lifecycles, partial unique indexes, multi-tenant isolation, and migration discipline. Use this whenever creating or altering a table, adding a column, choosing a key or a column type, writing or reviewing a migration in any tool (Prisma, Alembic, dbmate, Flyway, Eloquent, Ecto, Drizzle, raw SQL), designing a data model, or reviewing a pull request that touches a schema - including when the user has not named a convention and is just asking what type something should be, or whether a change is safe to run against a database that already holds data.",
+      "train_passed": 6,
+      "train_failed": 6,
+      "train_total": 12,
+      "train_results": [
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 4,
+      "test_failed": 4,
+      "test_total": 8,
+      "test_results": [
+        {
+          "query": "we soft delete users with deleted_at. now i have a unique index on email and a deleted user is holding an address someone wants to reuse. whats the standard fix here",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "reviewing this alembic revision before it goes out, can you sanity check it? it adds an `archived` boolean to orders and a partial index on (tenant_id, order_number)",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "we have 47 migrations now and half of them are from before launch. can i squash them into one baseline file to make local setup faster",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "writing this by hand in dbmate, no orm. creating a `subscriptions` table that belongs to an account and has a plan, an amount, and start/end dates. what should the ddl look like",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "need a seeder that generates about 500 realistic orders across 20 customers so the dashboard doesnt look empty in demos",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our nightly pg_dump has been failing for a week and nobody noticed. want to set up something that actually tells us when a backup hasnt landed",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "designing the graphql schema for our public api. should `Order.lineItems` be a plain list or a proper relay connection with pagination",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "pgbouncer or the built in pool? we're on a small droplet and hitting max_connections during traffic spikes",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 6,
+      "failed": 6,
+      "total": 12,
+      "results": [
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 2,
+      "description": "Use when someone is deciding the shape of a table or column, not the speed of a query. Typical asks: what type should this be (enum vs varchar, how long a varchar, text vs JSON, money as numeric vs integer minor units, timestamp handling); what should the primary key be and who generates it (UUID vs serial, app-side vs DB default); how to name foreign keys; what a multi-tenant design with an org_id must get right up front; unique/partial indexes and soft-delete vs append-only; whether a migration is safe to run against a database that already holds data. Also use when reviewing a PR, diff, or migration that adds or alters tables and the reviewer wants to know if the keys, columns, and indexes are right. Applies to any engine or tool \u2014 Postgres, MySQL, Prisma, Alembic, Drizzle, Eloquent, Ecto, Flyway, raw SQL. Trigger even on small, casual, one-column questions; the user will rarely mention \"conventions.\" Skip for slow-query tuning, N+1/ORM fetching, and database ops.",
+      "train_passed": 6,
+      "train_failed": 6,
+      "train_total": 12,
+      "train_results": [
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 4,
+      "test_failed": 4,
+      "test_total": 8,
+      "test_results": [
+        {
+          "query": "we soft delete users with deleted_at. now i have a unique index on email and a deleted user is holding an address someone wants to reuse. whats the standard fix here",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "reviewing this alembic revision before it goes out, can you sanity check it? it adds an `archived` boolean to orders and a partial index on (tenant_id, order_number)",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "writing this by hand in dbmate, no orm. creating a `subscriptions` table that belongs to an account and has a plan, an amount, and start/end dates. what should the ddl look like",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "we have 47 migrations now and half of them are from before launch. can i squash them into one baseline file to make local setup faster",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "our nightly pg_dump has been failing for a week and nobody noticed. want to set up something that actually tells us when a backup hasnt landed",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "need a seeder that generates about 500 realistic orders across 20 customers so the dashboard doesnt look empty in demos",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "designing the graphql schema for our public api. should `Order.lineItems` be a plain list or a proper relay connection with pagination",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "pgbouncer or the built in pool? we're on a small droplet and hitting max_connections during traffic spikes",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 6,
+      "failed": 6,
+      "total": 12,
+      "results": [
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 3,
+      "description": "Use before answering any question about what a table or column should look like \u2014 this project has a house standard with numbered rules, and generic advice will contradict it. Covers: column types and sizes (enum vs string, varchar width, text, JSON, money and currency, timestamps), primary keys and who generates them, foreign key naming, tenant/org_id isolation, uniqueness and soft-delete vs append-only, and whether a migration is safe against a database holding real data. Applies to every engine and tool \u2014 Postgres, MySQL, Prisma, Alembic, Drizzle, Eloquent, Ecto, raw SQL \u2014 and to reviewing a PR, diff, or migration that adds or alters tables. Load it even for the smallest one-column question (\"what varchar length?\", \"enum or varchar?\", \"UUID in app code or DB default?\"); users ask casually and never say \"conventions\". Not for query speed, N+1/ORM fetching, or database operations.",
+      "train_passed": 6,
+      "train_failed": 6,
+      "train_total": 12,
+      "train_results": [
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 4,
+      "test_failed": 4,
+      "test_total": 8,
+      "test_results": [
+        {
+          "query": "we soft delete users with deleted_at. now i have a unique index on email and a deleted user is holding an address someone wants to reuse. whats the standard fix here",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "we have 47 migrations now and half of them are from before launch. can i squash them into one baseline file to make local setup faster",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "reviewing this alembic revision before it goes out, can you sanity check it? it adds an `archived` boolean to orders and a partial index on (tenant_id, order_number)",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "writing this by hand in dbmate, no orm. creating a `subscriptions` table that belongs to an account and has a plan, an amount, and start/end dates. what should the ddl look like",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "our nightly pg_dump has been failing for a week and nobody noticed. want to set up something that actually tells us when a backup hasnt landed",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "need a seeder that generates about 500 realistic orders across 20 customers so the dashboard doesnt look empty in demos",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "pgbouncer or the built in pool? we're on a small droplet and hitting max_connections during traffic spikes",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "designing the graphql schema for our public api. should `Order.lineItems` be a plain list or a proper relay connection with pagination",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 6,
+      "failed": 6,
+      "total": 12,
+      "results": [
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 4,
+      "description": "If a message names a table, column, key, index, or migration and asks what it should be \u2014 or whether what already exists is right \u2014 use this skill. It carries the project's binding schema standard, so answering from general database knowledge produces the wrong answer. Applies to: column types and widths (enum vs string, varchar length, text, JSON), money and currency, timestamps, primary keys and who generates the id, foreign key naming, multi-tenant org_id design, unique indexes and soft delete, and whether a migration is safe against a database holding real data. Any engine or ORM \u2014 Postgres, MySQL, Prisma, Alembic, Drizzle, Eloquent, Ecto, raw SQL \u2014 and any form: a fresh data model, a single-column tweak, or reviewing a PR or diff that adds or alters tables. Not for query performance, N+1 fetching, or operating databases.",
+      "train_passed": 6,
+      "train_failed": 6,
+      "train_total": 12,
+      "train_results": [
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 4,
+      "test_failed": 4,
+      "test_total": 8,
+      "test_results": [
+        {
+          "query": "we soft delete users with deleted_at. now i have a unique index on email and a deleted user is holding an address someone wants to reuse. whats the standard fix here",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "we have 47 migrations now and half of them are from before launch. can i squash them into one baseline file to make local setup faster",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "writing this by hand in dbmate, no orm. creating a `subscriptions` table that belongs to an account and has a plan, an amount, and start/end dates. what should the ddl look like",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "reviewing this alembic revision before it goes out, can you sanity check it? it adds an `archived` boolean to orders and a partial index on (tenant_id, order_number)",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "our nightly pg_dump has been failing for a week and nobody noticed. want to set up something that actually tells us when a backup hasnt landed",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "need a seeder that generates about 500 realistic orders across 20 customers so the dashboard doesnt look empty in demos",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "pgbouncer or the built in pool? we're on a small droplet and hitting max_connections during traffic spikes",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "designing the graphql schema for our public api. should `Order.lineItems` be a plain list or a proper relay connection with pagination",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 6,
+      "failed": 6,
+      "total": 12,
+      "results": [
+        {
+          "query": "should `status` on my invoices table be a postgres enum type or just a varchar? we add new statuses maybe twice a year",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "designing the tables for a new multi-tenant app in postgres. every table will have an org_id. what do i need to get right at the start that's painful to add later",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "can you look over PR #212, it adds three new tables for the reporting feature. mostly want to know if the keys and the indexes are right before i approve it",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "storing prices. right now its NUMERIC(10,2) and a separate `currency` varchar. finance is asking about supporting JPY which has no decimals and im not sure our column survives that",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im adding a 'nickname' field to our customers table, whats a sensible varchar length? the longest one we have in prod right now is about 80 chars",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "quick prisma question - i've got `id String @id @default(uuid())` on all my models. someone on the team said we should be generating these in app code instead. is that actually worth changing or is it bikeshedding",
+          "should_trigger": true,
+          "trigger_rate": 0.3333333333333333,
+          "triggers": 1,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "im getting an N+1 on the orders index page, every order is loading its customer separately. using eloquent, how do i eager load that properly",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i've got a json schema for validating webhook payloads from stripe and its rejecting valid events. the `data.object` bit is typed too strictly i think",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write me a query that gives monthly recurring revenue by plan for the last 12 months, with the month-over-month change as a percentage",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "this query is doing a seq scan on a 4M row table and taking 8 seconds. `select * from events where payload->>'type' = 'signup' order by created_at desc limit 50`. how do i speed it up",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "my postgres container in docker-compose keeps losing data on restart. i think the volume mount is wrong but the syntax looks right to me",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our elasticsearch mapping has `title` as a keyword and search is only matching exact strings. need partial matching but i dont want to reindex 2M docs if i can avoid it",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

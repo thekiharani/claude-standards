@@ -1,0 +1,82 @@
+[
+  {
+    "query": "write the InvoiceDispatcher service - takes a won deal, calls the fulfilment handler, records the attempt, retries twice. follow how the rest of app/Services is written",
+    "should_trigger": true
+  },
+  {
+    "query": "this 600-line controller needs breaking up into a service and a couple of form requests. do it and keep it consistent with the rest of the codebase",
+    "should_trigger": true
+  },
+  {
+    "query": "do a cleanup pass over src/ - theres dead code, half-finished things and a lot of noise that accumulated over the last few months",
+    "should_trigger": true
+  },
+  {
+    "query": "review this PR properly before i merge it. 14 files, mostly the new export pipeline. i care about whether it reads like the rest of our code",
+    "should_trigger": true
+  },
+  {
+    "query": "port lib/pricing.py to typescript for the frontend. same behaviour, but written the way the ts side of this repo is written",
+    "should_trigger": true
+  },
+  {
+    "query": "our repo has gotten really noisy, theres comments everywhere restating what the line below does. want to do a cleanup pass but not lose the handful that are actually useful",
+    "should_trigger": true
+  },
+  {
+    "query": "generate the crud layer for the new Warehouse model - migration, model, controller, requests, resource, tests. match the existing conventions exactly",
+    "should_trigger": true
+  },
+  {
+    "query": "im about to write a retry helper that catches a specific 409 from the provider and swallows it, which looks wrong but isnt. write it and handle explaining that however we normally would",
+    "should_trigger": true
+  },
+  {
+    "query": "take this prototype script and turn it into something that belongs in the repo - proper structure, error handling, tests, and written like everything else here",
+    "should_trigger": true
+  },
+  {
+    "query": "our .env.example is 200 lines and about half of it is explanation. some of it is genuinely useful, some is just naming the variable again. sort it out",
+    "should_trigger": true
+  },
+  {
+    "query": "need a README for this package. what it does, install steps, a usage example and the config options table",
+    "should_trigger": false
+  },
+  {
+    "query": "help me write the commit message for this change - i split the payment settlement out of the webhook controller into its own class and added a test",
+    "should_trigger": false
+  },
+  {
+    "query": "my ts types for the api client are all `any` and its useless. can you type the response shapes properly off the openapi spec",
+    "should_trigger": false
+  },
+  {
+    "query": "i want to generate openapi docs from the laravel routes automatically so the frontend team stops asking me what the payload looks like",
+    "should_trigger": false
+  },
+  {
+    "query": "add structured logging to the import pipeline so we can actually tell which row failed. currently its just a generic exception with no context",
+    "should_trigger": false
+  },
+  {
+    "query": "prettier and eslint are fighting over trailing commas and arrow parens in this repo, every save produces a diff. how do i make them agree",
+    "should_trigger": false
+  },
+  {
+    "query": "im publishing this python package to pypi. the public functions need proper docstrings with args, returns and raises so sphinx picks them up and users get autocomplete",
+    "should_trigger": false
+  },
+  {
+    "query": "we need to get the ui strings out of the components and into locale files, starting with english and swahili",
+    "should_trigger": false
+  },
+  {
+    "query": "add an entry to CHANGELOG.md for the 2.4.0 release, theres about eight commits since the last tag",
+    "should_trigger": false
+  },
+  {
+    "query": "walk me through what this reducer is doing, i inherited it and the state transitions dont make sense to me",
+    "should_trigger": false
+  }
+]
