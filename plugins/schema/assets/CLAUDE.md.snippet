@@ -1,0 +1,9 @@
+## Database schema
+
+Keys, column types, money, time, lifecycles and migration discipline follow
+`.standards/plugins/schema/skills/relational-schema/references/spec.md`, and this project's own
+choices are in `schema-conventions.toml`. Read both before writing a migration or altering a table.
+
+Two that are costly to get wrong: a migration that has run anywhere real is finished and is never
+edited or consolidated into, and a migration reads nothing it does not carry. `/schema check` runs
+the conformance checker against the live catalogue.

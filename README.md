@@ -29,13 +29,26 @@ identical scores, and a hand-written imperative version - "MUST be read before w
 any file" - moved nothing. The cause is not the wording. A conventions skill describes how to do
 work Claude already knows how to do, so it is never reached for.
 
-What follows is how to use these:
+## Adopting these in a repository
 
-- **`/schema` and `/comments`** when you want the rules applied to what you are doing now.
-- **A line in the repository's `CLAUDE.md`** pointing at the spec, which is always in context and
-  does not depend on a decision to load anything.
-- **The checkers in CI**, which do not depend on triggering at all and are the only part that
-  fails a build.
+`/schema adopt` and `/comments adopt` do the setup. What they put in place, weakest to strongest:
+
+| Layer | Reaches | Stops a merge |
+|---|---|---|
+| `CLAUDE.md` pointing at the spec | the model, on every turn, always in context | no |
+| `/schema`, `/comments` | when somebody asks | no |
+| The checkers in CI | every pull request | **yes, once the job is a required status check** |
+
+Only the last one enforces. The first is what changes the code as it is written, and the two are
+worth having together: CI tells you after the fact, `CLAUDE.md` is what stops it being written
+that way.
+
+Adding the workflow is not enough on its own. The job has to be a **required status check** in
+branch protection, or a red run is a red run somebody can merge past.
+
+The comments audit needs no services and takes seconds. The schema check needs a live database, so
+its workflow is gated on migration paths and has one line the template cannot know - how this
+project builds its schema.
 
 The eval sets and results are in `evals/`, so the measurement can be repeated when the model or
 the harness changes.

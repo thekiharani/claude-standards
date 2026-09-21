@@ -1,0 +1,53 @@
+name: Schema
+
+# Only when something that shapes the schema changed. A conformance run needs a database, which
+# costs minutes, and nothing about a front-end change can break it.
+on:
+  pull_request:
+    paths:
+      - '**/migrations/**'
+      - '**/migrate/**'
+      - 'schema-conventions.toml'
+      - '**/schema.prisma'
+
+jobs:
+  conformance:
+    name: Schema conforms to the standard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: conformance
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/conformance
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/checkout@v5
+        with:
+          repository: thekiharani/claude-standards
+          path: .standards
+          ref: main
+
+      - name: Build the schema
+        # Replace with whatever this project runs. The checker reads the catalogue, so it does not
+        # care which tool produced it, only that the database is migrated.
+        run: echo "::error::set the migrate step for this project" && exit 1
+
+      - run: pip install --quiet 'psycopg[binary]'
+
+      - name: Check
+        run: |
+          python3 .standards/plugins/schema/skills/relational-schema/scripts/verify_schema.py \
+            --url "$DATABASE_URL" | tee check.txt
+          tail -3 check.txt >> "$GITHUB_STEP_SUMMARY"

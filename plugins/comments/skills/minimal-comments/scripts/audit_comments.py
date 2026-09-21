@@ -58,7 +58,11 @@ PRAGMA = re.compile(
     r"@(param|return|returns|var|type|template|extends|implements|mixin|use|property|method|throws|"
     r"deprecated|phpstan|psalm|ts-|eslint|typescript|see|inheritdoc|internal|override|nodoc)"
     r"|type:|noqa|pragma|pylint|mypy|ruff|prettier|eslint|stylelint|go:|cgo|nolint|"
-    r"#\[|coding[:=]|-\*-|shellcheck|checkov|tflint|hadolint|trivy|yamllint|language=)",
+    r"#\[|coding[:=]|-\*-|shellcheck|checkov|tflint|hadolint|trivy|yamllint|language=|"
+    # Directives a build reads. A Dockerfile's syntax= line and a shebang look like comments and
+    # are not: deleting one changes what runs.
+    r"syntax=|escape=|check=|frozen_string_literal|warn_indent|!/|!\s*/usr|source\s|deno-|"
+    r"biome-|v8-|webpack|vite-|rollup|swc-|istanbul|c8\s|jest|vitest-environment)",
     re.IGNORECASE,
 )
 

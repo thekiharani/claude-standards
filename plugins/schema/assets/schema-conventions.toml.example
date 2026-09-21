@@ -1,0 +1,37 @@
+# This project's own choices. The rules live in the standard; what varies per codebase lives here,
+# which is what lets one copy of the standard serve several without forking.
+
+[project]
+engine = "postgres"
+display_timezone = "UTC"
+week_starts = "monday"
+
+[tenancy]
+enabled = false
+# column = "workspace_id"
+# table  = "workspaces"
+
+# K5. Foreign keys named for a role rather than the table they point at. K6 fails an entry nothing
+# uses, so this cannot rot into stale documentation.
+[keys.roles]
+# owner_id = "users"
+# creator_id = "users"
+
+# C2. Widths that are not powers of two, each with the standard that fixes it.
+[columns.widths]
+# currency = { width = 3, standard = "ISO 4217" }
+
+# C8. Semi-structured columns that have been agreed.
+[columns.json]
+allowed = []
+
+# L. Every table names its class. A table absent from here fails the check.
+[lifecycle]
+soft_delete = []
+append_only = []
+retire = []
+composed = []
+ephemeral = []
+
+# U1. Unique indexes that must survive a soft delete, each with its reason.
+[uniqueness.exceptions]

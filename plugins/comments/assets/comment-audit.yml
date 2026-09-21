@@ -1,0 +1,27 @@
+name: Comments
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  audit:
+    name: No comment a codebase is better without
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/checkout@v5
+        with:
+          repository: thekiharani/claude-standards
+          path: .standards
+          ref: main
+
+      - name: Audit
+        run: |
+          python3 .standards/plugins/comments/skills/minimal-comments/scripts/audit_comments.py . \
+            | tee audit.txt
+          tail -2 audit.txt >> "$GITHUB_STEP_SUMMARY"

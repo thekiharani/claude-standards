@@ -1,0 +1,10 @@
+## Comments
+
+Near-zero, in every file: source, Dockerfiles, YAML, workflows, shell, SQL, stylesheets, templates
+and config. The rule and the reasoning are in
+`.standards/plugins/comments/skills/minimal-comments/SKILL.md`; read it before adding a comment or
+a docblock.
+
+The short of it: delete the comment and ask whether the next person changes the code for the worse.
+Keep it only if they would. Never restate the code, never a TODO, never commented-out code, never a
+section label. Always keep type annotations and pragmas. `/comments audit` finds what to remove.
