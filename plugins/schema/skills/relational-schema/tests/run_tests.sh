@@ -33,20 +33,20 @@ docker run -d --name "$CONTAINER" \
     -e POSTGRES_PASSWORD=test -e POSTGRES_DB=violations \
     -p "$PORT:5432" "$IMAGE" >/dev/null
 
-# pg_isready answers during the image's own init phase, before the real server is up, so wait
-# on a query that has to reach the finished server instead.
+# The image runs a temporary server on the unix socket while it initialises, so both pg_isready
+# and a socket query answer before the real one exists. Only the finished server listens on TCP.
 for _ in $(seq 60); do
-    docker exec "$CONTAINER" psql -q -U postgres -tAc 'select 1' >/dev/null 2>&1 && break
+    docker exec "$CONTAINER" psql -q -h 127.0.0.1 -U postgres -tAc 'select 1' >/dev/null 2>&1 && break
     sleep 1
 done
 
-docker exec "$CONTAINER" psql -q -U postgres -c 'create database conforming' >/dev/null
+docker exec "$CONTAINER" psql -q -h 127.0.0.1 -U postgres -c 'create database conforming' >/dev/null
 
 url() { echo "postgresql://postgres:test@127.0.0.1:$PORT/$1"; }
 
 echo "==> loading fixtures"
-docker exec -i "$CONTAINER" psql -q -U postgres -d violations < fixtures/violations.sql
-docker exec -i "$CONTAINER" psql -q -U postgres -d conforming < fixtures/conforming.sql
+docker exec -i "$CONTAINER" psql -q -h 127.0.0.1 -U postgres -d violations < fixtures/violations.sql
+docker exec -i "$CONTAINER" psql -q -h 127.0.0.1 -U postgres -d conforming < fixtures/conforming.sql
 
 failures=0
 
