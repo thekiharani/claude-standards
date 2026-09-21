@@ -1,6 +1,6 @@
 {
   "name": "schema",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Framework-agnostic relational schema conventions, with a conformance checker that reads the live catalogue.",
   "author": {
     "name": "Joseph Gitonga",
